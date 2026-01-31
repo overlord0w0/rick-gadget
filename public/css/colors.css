@@ -1,0 +1,9 @@
+:root {
+    --rick-bg: #050505;
+    --rick-green: #39ff14;
+    --rick-green-dim: #1f8c0b;
+    --rick-blue: #00f3ff;
+    --rick-text: #aaffaa;
+    --rick-error: #ff003c;
+    --crt-scanline: rgba(18, 16, 16, 0.5);
+}

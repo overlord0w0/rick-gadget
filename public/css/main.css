@@ -1,0 +1,331 @@
+body {
+    margin: 0;
+    background-color: #000;
+    font-family: 'Courier New', monospace;
+    color: var(--rick-text);
+    overflow: hidden;
+}
+
+#gadget-frame {
+    display: flex;
+    height: 100vh;
+    border: 4px solid var(--rick-green-dim);
+    box-shadow: 0 0 30px var(--rick-green-dim) inset;
+    background-color: var(--rick-bg);
+}
+
+#sidebar {
+    width: 250px;
+    border-right: 2px solid var(--rick-green);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(0, 50, 0, 0.2);
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid var(--rick-green);
+    color: var(--rick-green);
+    padding: 15px;
+    font-family: inherit;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.2s;
+    text-align: left;
+}
+
+.nav-btn:hover, .nav-btn.active {
+    background: var(--rick-green);
+    color: #000;
+    box-shadow: 0 0 15px var(--rick-green);
+}
+
+#main-screen {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+}
+
+#top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed var(--rick-green-dim);
+    padding-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+input#search-input {
+    background: transparent;
+    border: 1px solid var(--rick-blue);
+    color: var(--rick-blue);
+    padding: 10px;
+    width: 60%;
+    font-family: inherit;
+    font-size: 1rem;
+    flex-grow: 1;
+}
+
+.filter-select {
+    background: black;
+    color: var(--rick-blue);
+    border: 1px solid var(--rick-blue);
+    padding: 10px;
+    font-family: inherit;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.filter-select:hover {
+    box-shadow: 0 0 10px var(--rick-blue);
+}
+
+/* Кнопка GO */
+#btn-search-go {
+    background: var(--rick-green);
+    color: black;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#content-area {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.char-card {
+    border: 1px solid var(--rick-green-dim);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.char-card:hover {
+    border-color: var(--rick-blue);
+    box-shadow: 0 0 10px var(--rick-blue);
+}
+
+.char-card img {
+    width: 100%;
+    filter: grayscale(80%) sepia(20%) hue-rotate(90deg);
+    transition: 0.3s;
+}
+
+.char-card:hover img {
+    filter: none;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+#modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
+}
+
+#modal-content {
+    background: #000; border: 2px solid var(--rick-green);
+    width: 500px; padding: 20px; position: relative;
+    box-shadow: 0 0 20px var(--rick-green);
+}
+
+#close-modal {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--rick-error); border: none; color: white;
+    font-weight: bold; cursor: pointer;
+}
+
+textarea {
+    width: 100%; height: 80px; background: #111;
+    border: 1px solid var(--rick-green-dim); color: var(--rick-green);
+    font-family: inherit; margin-top: 10px;
+}
+
+/* Анімація для мешканців локації */
+.resident-node {
+    opacity: 0;
+    animation: popIn 0.5s forwards;
+    transition: transform 0.2s;
+}
+
+.resident-node:hover {
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+.resident-node img {
+    box-shadow: 0 0 5px var(--rick-blue);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.resident-node:nth-child(1) { animation-delay: 0.05s; }
+.resident-node:nth-child(2) { animation-delay: 0.1s; }
+.resident-node:nth-child(3) { animation-delay: 0.15s; }
+.resident-node:nth-child(4) { animation-delay: 0.2s; }
+.resident-node:nth-child(5) { animation-delay: 0.25s; }
+
+#residents-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+
+    /* ВАЖЛИВО: Обмежуємо висоту і вмикаємо прокрутку */
+    max-height: 60vh; /* 60% від висоти екрану */
+    overflow-y: auto; /* Вертикальна прокрутка */
+
+    padding: 10px;
+    border: 1px solid var(--rick-green-dim);
+    background: rgba(0, 20, 0, 0.5);
+}
+
+/* Стилізація скролбару (щоб був зеленим) */
+#residents-grid::-webkit-scrollbar {
+    width: 10px;
+}
+
+#residents-grid::-webkit-scrollbar-track {
+    background: #000;
+}
+
+#residents-grid::-webkit-scrollbar-thumb {
+    background: var(--rick-green-dim);
+    border-radius: 5px;
+}
+
+#residents-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--rick-green);
+}
+
+/* Курсор для іконок, щоб було видно, що можна клікати */
+.resident-node {
+    cursor: pointer;
+}
+
+/* --- ЕКРАН ВХОДУ --- */
+#login-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 9999; /* Поверх усього */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image:
+            radial-gradient(circle, rgba(0, 50, 0, 0.2) 0%, black 80%),
+            url('https://wallpapers.com/images/hd/rick-and-morty-green-portal-background-4k-yy92556555565555.jpg'); /* Можна замінити на свою картинку */
+    background-size: cover;
+}
+
+#login-screen.hidden {
+    display: none !important;
+}
+
+.login-box {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid var(--rick-green);
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 30px var(--rick-green);
+    max-width: 400px;
+    width: 90%;
+}
+
+.input-group {
+    margin: 15px 0;
+}
+
+.login-box input {
+    background: black;
+    border: 1px solid var(--rick-green-dim);
+    color: var(--rick-green);
+    padding: 10px;
+    width: 100%;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    outline: none;
+    text-align: center;
+}
+
+.login-box input:focus {
+    border-color: var(--rick-green);
+    box-shadow: 0 0 10px var(--rick-green);
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.auth-btn {
+    background: var(--rick-green);
+    color: black;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.3s;
+}
+
+.auth-btn:hover {
+    box-shadow: 0 0 15px var(--rick-green);
+}
+
+.auth-btn.register {
+    background: transparent;
+    border: 1px solid var(--rick-green);
+    color: var(--rick-green);
+    font-size: 0.8rem;
+}
+
+.auth-btn.register:hover {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+/* --- ПАСХАЛКА: JERRY MODE --- */
+body.jerry-theme {
+    /* Міняємо крутий чорний фон на нудний пастельний */
+    --rick-black: #fff0f5;
+
+    /* Міняємо неоновий зелений на гламурний рожевий */
+    --rick-green: #ff69b4;
+    --rick-green-dim: #ffb6c1;
+
+    /* Міняємо синій на фіолетовий */
+    --rick-blue: #9370db;
+
+    /* Шрифт для лузерів */
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
+}
+
+body.jerry-theme .crt-overlay {
+    display: none; /* Вимикаємо ефект старого телевізора, бо Джеррі не заслуговує на ефекти */
+}
+
+body.jerry-theme button {
+    border-radius: 20px; /* Робимо кнопки круглими і м'якими */
+}

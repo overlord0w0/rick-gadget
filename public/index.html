@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanchez Multi-Dimensional Scanner</title>
+
+    <link rel="stylesheet" href="css/colors.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/glitch.css">
+</head>
+<body>
+
+<div id="login-screen">
+    <div class="login-box">
+        <h1 class="glitch-text">ACCESS CONTROL</h1>
+        <p>COUNCIL OF RICKS DATABASE</p>
+
+        <div class="input-group">
+            <input type="text" id="auth-username" placeholder="ENTER AGENT ID...">
+        </div>
+        <div class="input-group">
+            <input type="password" id="auth-password" placeholder="ENTER PASSWORD...">
+        </div>
+
+        <div class="auth-buttons">
+            <button id="btn-login-action" class="auth-btn">LOGIN</button>
+            <button id="btn-register-action" class="auth-btn register">NEW AGENT REGISTRATION</button>
+        </div>
+
+        <p id="auth-message" style="margin-top: 15px; height: 20px; color: var(--rick-error);"></p>
+    </div>
+</div>
+
+<div class="crt-overlay"></div>
+
+<div id="gadget-frame">
+    <aside id="sidebar">
+        <h2 style="color: var(--rick-blue)">SMDS v4.2</h2>
+        <button class="nav-btn active" id="btn-chars">[ CHARACTERS ]</button>
+        <button class="nav-btn" id="btn-favorites">❤️ [ MY SQUAD ]</button>
+        <button class="nav-btn" id="btn-locations">[ LOCATIONS ]</button>
+        <button class="nav-btn" id="btn-research">[ MY RESEARCH ]</button>
+        <button class="nav-btn" id="btn-map">[ GALAXY MAP ]</button>
+
+        <div style="margin-top: auto; font-size: 0.8rem; opacity: 0.7;">
+            <span id="user-display">USER: GUEST</span><br>
+            LEVEL: 1
+        </div>
+
+        <button id="btn-logout" class="nav-btn" style="
+            margin-top: 15px;
+            border-color: var(--rick-error);
+            color: var(--rick-error);">
+            [ SYSTEM EXIT ]
+        </button>
+    </aside>
+
+    <main id="main-screen">
+        <div id="portal-loader" class="portal-loader"></div>
+
+        <div id="top-bar">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="SEARCH ENTITY...">
+
+                <select id="filter-status" class="filter-select">
+                    <option value="">[ ANY STATUS ]</option>
+                    <option value="alive">ALIVE</option>
+                    <option value="dead">DEAD</option>
+                    <option value="unknown">UNKNOWN</option>
+                </select>
+
+                <select id="filter-gender" class="filter-select">
+                    <option value="">[ ANY GENDER ]</option>
+                    <option value="female">FEMALE</option>
+                    <option value="male">MALE</option>
+                    <option value="genderless">GENDERLESS</option>
+                    <option value="unknown">UNKNOWN</option>
+                </select>
+
+                <button id="btn-search-go" class="nav-btn" style="padding: 5px 15px;">GO</button>
+            </div>
+            <div style="color: var(--rick-green); font-size: 0.8rem; margin-top: 10px;">SYSTEM STATUS: ONLINE</div>
+        </div>
+
+        <div id="view-characters" class="view-section">
+            <div id="content-area"></div>
+
+            <button id="btn-load-more" class="action-btn hidden">
+                vv SCAN MORE SECTORS (LOAD MORE) vv
+            </button>
+        </div> <div id="view-locations" class="view-section hidden">
+        <div id="locations-area" class="grid-container"></div>
+    </div>
+
+        <div id="view-research" class="view-section hidden">
+            <div id="notes-area"></div>
+        </div>
+
+        <div id="view-map" class="view-section hidden" style="text-align: center; margin-top: 100px;">
+            <h1 class="glitch-text" style="font-size: 3rem; color: var(--rick-error);">CONNECTION LOST...</h1>
+            <p>DIMENSION C-137 NAVIGATION OFFLINE</p>
+            <img src="https://media.tenor.com/tZ2X8a0k8iEAAAAC/static-tv.gif" style="width: 200px; opacity: 0.5; mix-blend-mode: screen;">
+        </div>
+    </main>
+</div>
+
+<div id="modal-overlay" class="hidden">
+    <div id="modal-content">
+        <button id="close-modal">X</button>
+        <div id="modal-body">
+        </div>
+        <div class="note-section">
+            <h4>RESEARCH NOTES:</h4>
+            <textarea id="char-note" placeholder="> Enter observation data..."></textarea>
+            <button id="save-note-btn">SAVE SPECIMEN DATA</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
