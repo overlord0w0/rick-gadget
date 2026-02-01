@@ -1,6 +1,5 @@
 import { playSound } from './audio.js';
 
-// Елементи форми входу
 const loginScreen = document.getElementById('login-screen');
 const usernameInput = document.getElementById('auth-username') as HTMLInputElement;
 const passwordInput = document.getElementById('auth-password') as HTMLInputElement;
@@ -8,11 +7,9 @@ const loginBtn = document.getElementById('btn-login-action');
 const registerBtn = document.getElementById('btn-register-action');
 const messageBox = document.getElementById('auth-message');
 
-// Елементи сайдбару
 const userDisplay = document.getElementById('user-display');
-const logoutBtn = document.getElementById('btn-logout'); // <--- НОВА КНОПКА
+const logoutBtn = document.getElementById('btn-logout');
 
-// Перевірка при старті
 export function checkAuth(): boolean {
     const token = localStorage.getItem('rick-token');
     const username = localStorage.getItem('rick-username');
@@ -25,7 +22,6 @@ export function checkAuth(): boolean {
     return false;
 }
 
-// Оновлення імені в сайдбарі
 function updateUserInfo(name: string) {
     if (userDisplay) {
         userDisplay.innerText = `USER: ${name.toUpperCase()}`;
@@ -39,22 +35,17 @@ function showMessage(msg: string, isError: boolean = true) {
     }
 }
 
-// Функція виходу
 function performLogout() {
     playSound('click');
-    // 1. Видаляємо ключі
     localStorage.removeItem('rick-token');
     localStorage.removeItem('rick-username');
 
-    // 2. Перезавантажуємо сторінку (найпростіший спосіб повернути екран входу)
     location.reload();
 }
 
 export function initAuth() {
-    // Слухаємо кнопку виходу
     logoutBtn?.addEventListener('click', performLogout);
 
-    // Логін
     loginBtn?.addEventListener('click', async () => {
         playSound('click');
         const username = usernameInput.value;
@@ -83,7 +74,6 @@ export function initAuth() {
                 setTimeout(() => {
                     if (loginScreen) loginScreen.classList.add('hidden');
                     updateUserInfo(data.username);
-                    // Перезавантажимо сторінку, щоб підтягнути дані саме цього юзера
                     location.reload();
                 }, 1000);
             } else {
@@ -95,7 +85,6 @@ export function initAuth() {
         }
     });
 
-    // Реєстрація
     registerBtn?.addEventListener('click', async () => {
         playSound('click');
         const username = usernameInput.value;

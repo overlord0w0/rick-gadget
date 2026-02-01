@@ -1,13 +1,14 @@
-import { Character } from './interfaces.js';
-// ВСІ ІМПОРТИ В ОДНОМУ РЯДКУ 👇
-import { getNote, saveNote, getAllNotes, fetchLocations, deleteNote, fetchResidents, addToFavorites, removeFromFavorites, checkFavorite, getFavorites } from './api.js';
+import { Character, Location, Note } from './interfaces.js';
+import { getNote, saveNote, getAllNotes, deleteNote, fetchResidents, addToFavorites, removeFromFavorites, checkFavorite } from './api.js';
 import { playSound } from './audio.js';
 
 const contentArea = document.getElementById('content-area') as HTMLDivElement;
 const portalLoader = document.getElementById('portal-loader') as HTMLDivElement;
 
 function speakData(text: string) {
+    if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.pitch = 0.5;
     utterance.rate = 1.1;
@@ -19,6 +20,12 @@ function speakData(text: string) {
     window.speechSynthesis.speak(utterance);
 }
 
+function getStatusColor(status: string): string {
+    if (status === 'Alive') return 'var(--rick-green)';
+    if (status === 'Dead') return 'var(--rick-error)';
+    return 'gray';
+}
+
 export function toggleLoader(show: boolean) {
     if (show) {
         portalLoader.style.display = 'block';
@@ -28,6 +35,7 @@ export function toggleLoader(show: boolean) {
         contentArea.style.opacity = '1';
     }
 }
+
 
 export function renderCharacters(characters: Character[], clear: boolean = true) {
     const btnMore = document.getElementById('btn-load-more');
@@ -53,15 +61,9 @@ export function renderCharacters(characters: Character[], clear: boolean = true)
         contentArea.appendChild(card);
     });
 
-    if(characters.length > 0) {
+    if (characters.length > 0) {
         btnMore?.classList.remove('hidden');
     }
-}
-
-function getStatusColor(status: string): string {
-    if (status === 'Alive') return 'var(--rick-green)';
-    if (status === 'Dead') return 'var(--rick-error)';
-    return 'gray';
 }
 
 async function openModal(char: Character) {
@@ -72,7 +74,7 @@ async function openModal(char: Character) {
     const noteInput = document.getElementById('char-note') as HTMLTextAreaElement;
     const saveBtn = document.getElementById('save-note-btn');
 
-    if(modal && body && noteInput && saveBtn) {
+    if (modal && body && noteInput && saveBtn) {
         modal.classList.remove('hidden');
         noteInput.value = 'Loading data...';
 
@@ -89,8 +91,8 @@ async function openModal(char: Character) {
                 </div>
                 
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                     <button id="speak-btn" style="background: transparent; border: 1px solid var(--rick-green); color: var(--rick-green); font-size: 1.5rem; cursor: pointer; padding: 5px;">🔊</button>
-                     <button id="fav-btn" style="background: transparent; border: 1px solid var(--rick-error); color: var(--rick-error); font-size: 1.5rem; cursor: pointer; padding: 5px;">${heartIcon}</button>
+                     <button id="speak-btn" class="icon-btn">🔊</button>
+                     <button id="fav-btn" class="icon-btn" style="color: var(--rick-error); border-color: var(--rick-error);">${heartIcon}</button>
                 </div>
             </div>
         `;
@@ -113,8 +115,7 @@ async function openModal(char: Character) {
 
         document.getElementById('speak-btn')?.addEventListener('click', (e) => {
             e.stopPropagation();
-            const speechText = `Subject: ${char.name}. Status: ${char.status}. Species: ${char.species}. Origin: ${char.location.name}.`;
-            speakData(speechText);
+            speakData(`Subject: ${char.name}. Status: ${char.status}. Species: ${char.species}. Origin: ${char.location.name}.`);
         });
 
         const savedText = await getNote(char.id);
@@ -127,12 +128,12 @@ async function openModal(char: Character) {
             const text = noteInput.value;
             await saveNote(char.id, char.name, text);
             playSound('success');
-            alert(`✅ SAVED: ${char.name}`);
+            alert(`SAVED: ${char.name}`);
         });
     }
 }
 
-export function renderLocations(locations: any[]) {
+export function renderLocations(locations: Location[]) {
     const locArea = document.getElementById('locations-area');
     if (!locArea) return;
 
@@ -154,7 +155,7 @@ export function renderLocations(locations: any[]) {
     });
 }
 
-async function openLocationModal(location: any) {
+async function openLocationModal(location: Location) {
     const modal = document.getElementById('modal-overlay');
     const body = document.getElementById('modal-body');
 
@@ -178,12 +179,12 @@ async function openLocationModal(location: any) {
 
         if (residentUrls.length === 0) {
             const grid = document.getElementById('residents-grid');
-            if(grid) grid.innerHTML = '<p>>> NO LIFEFORMS DETECTED <<</p>';
+            if (grid) grid.innerHTML = '<p>>> NO LIFEFORMS DETECTED <<</p>';
             return;
         }
 
-        const ids = residentUrls.map((url: string) => url.split('/').pop());
-        const residents = await fetchResidents(ids);
+        const ids = residentUrls.map((url: string) => url.split('/').pop() || '');
+        const residents = await fetchResidents(ids.filter(id => id !== ''));
 
         const grid = document.getElementById('residents-grid');
         if (grid) {
@@ -211,6 +212,7 @@ export async function renderNotes() {
     const notesArea = document.getElementById('notes-area');
     if (!notesArea) return;
     notesArea.innerHTML = '<p>LOADING CLASSIFIED DATA...</p>';
+
     const notes = await getAllNotes();
     notesArea.innerHTML = '';
 
@@ -219,7 +221,7 @@ export async function renderNotes() {
         return;
     }
 
-    notes.forEach((note: any) => {
+    notes.forEach((note: Note) => {
         const div = document.createElement('div');
         div.style.border = '1px dashed var(--rick-green)';
         div.style.margin = '10px 0';
@@ -236,10 +238,10 @@ export async function renderNotes() {
 
         div.querySelector('.delete-btn')?.addEventListener('click', async (e) => {
             e.stopPropagation();
-            if(confirm('ERASE DATA?')) {
+            if (confirm('ERASE DATA?')) {
                 await deleteNote(note.characterId);
                 div.remove();
-                if(notesArea.children.length === 0) notesArea.innerHTML = '<h3>NO RESEARCH DATA FOUND.</h3>';
+                if (notesArea.children.length === 0) notesArea.innerHTML = '<h3>NO RESEARCH DATA FOUND.</h3>';
             }
         });
         notesArea.appendChild(div);

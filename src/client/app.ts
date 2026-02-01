@@ -3,15 +3,13 @@ import { renderCharacters, renderLocations, renderNotes, toggleLoader, switchTab
 import { playSound } from './audio.js';
 import { initAuth, checkAuth } from './auth.js';
 
-// Елементи керування
 const btnChars = document.getElementById('btn-chars');
-const btnFavs = document.getElementById('btn-favorites'); // <--- БУЛО btnRicks
+const btnFavs = document.getElementById('btn-favorites');
 const btnLocs = document.getElementById('btn-locations');
 const btnResearch = document.getElementById('btn-research');
 const btnMap = document.getElementById('btn-map');
 const btnLoadMore = document.getElementById('btn-load-more');
 
-// Елементи фільтрів та пошуку
 const searchInput = document.getElementById('search-input') as HTMLInputElement;
 const filterStatus = document.getElementById('filter-status') as HTMLSelectElement;
 const filterGender = document.getElementById('filter-gender') as HTMLSelectElement;
@@ -20,7 +18,6 @@ const btnGo = document.getElementById('btn-search-go');
 const closeModalBtn = document.getElementById('close-modal');
 const modalOverlay = document.getElementById('modal-overlay');
 
-// СТАН ДОДАТКУ
 let currentPage = 1;
 let currentSearch = '';
 let currentStatus = '';
@@ -44,7 +41,6 @@ async function init() {
         console.log(">> WAITING FOR AUTHENTICATION...");
     }
 
-    // --- КНОПКИ МЕНЮ ---
     btnChars?.addEventListener('click', async () => {
         switchTab('view-characters');
         highlightBtn(btnChars);
@@ -54,23 +50,19 @@ async function init() {
         await startSearch();
     });
 
-    // --- КНОПКА MY SQUAD (FAVORITES) ---
     btnFavs?.addEventListener('click', async () => {
         switchTab('view-characters');
         highlightBtn(btnFavs);
 
         toggleLoader(true);
-        // Завантажуємо з бази
         const favorites = await getFavorites();
         renderCharacters(favorites, true);
 
-        // Ховаємо кнопку "Load More", бо це весь список
         document.getElementById('btn-load-more')?.classList.add('hidden');
 
         toggleLoader(false);
     });
 
-    // --- КНОПКА ЗАВАНТАЖИТИ ЩЕ ---
     btnLoadMore?.addEventListener('click', async () => {
         currentPage++;
         toggleLoader(true);
@@ -79,13 +71,11 @@ async function init() {
         toggleLoader(false);
     });
 
-    // --- КНОПКА GO (Фільтри) ---
     btnGo?.addEventListener('click', async () => {
         switchTab('view-characters');
         await startSearch();
     });
 
-    // --- ІНШІ ВКЛАДКИ ---
     btnLocs?.addEventListener('click', async () => {
         switchTab('view-locations');
         highlightBtn(btnLocs);
@@ -106,7 +96,6 @@ async function init() {
         highlightBtn(btnMap);
     });
 
-    // ПОШУК (Enter)
     searchInput.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter') {
             switchTab('view-characters');
@@ -126,19 +115,15 @@ async function startSearch() {
 
     currentPage = 1;
 
-    // --- ЛОГІКА ПАСХАЛКИ ---
-    // Перевіряємо, чи ввів користувач слово "Jerry" (незалежно від регістру)
     if (currentSearch.toLowerCase().includes('jerry')) {
-        document.body.classList.add('jerry-theme'); // Вмикаємо "Режим Джеррі"
+        document.body.classList.add('jerry-theme');
         console.log("⚠️ JERRY DETECTED. SYSTEM DOWNGRADE INITIATED.");
 
-        // Можна навіть поміняти заголовок в сайдбарі
         const title = document.querySelector('aside h2');
         if (title) title.innerHTML = "JERRY'S PAD v1.0";
     } else {
-        document.body.classList.remove('jerry-theme'); // Вимикаємо, якщо шукають нормальних людей
+        document.body.classList.remove('jerry-theme');
 
-        // Повертаємо заголовок назад
         const title = document.querySelector('aside h2');
         if (title) title.innerHTML = "SMDS v4.2";
     }

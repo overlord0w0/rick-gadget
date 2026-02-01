@@ -85,7 +85,6 @@ input#search-input {
     box-shadow: 0 0 10px var(--rick-blue);
 }
 
-/* Кнопка GO */
 #btn-search-go {
     background: var(--rick-green);
     color: black;
@@ -154,7 +153,6 @@ textarea {
     font-family: inherit; margin-top: 10px;
 }
 
-/* Анімація для мешканців локації */
 .resident-node {
     opacity: 0;
     animation: popIn 0.5s forwards;
@@ -188,16 +186,14 @@ textarea {
     gap: 15px;
     justify-content: center;
 
-    /* ВАЖЛИВО: Обмежуємо висоту і вмикаємо прокрутку */
-    max-height: 60vh; /* 60% від висоти екрану */
-    overflow-y: auto; /* Вертикальна прокрутка */
+    max-height: 60vh;
+    overflow-y: auto;
 
     padding: 10px;
     border: 1px solid var(--rick-green-dim);
     background: rgba(0, 20, 0, 0.5);
 }
 
-/* Стилізація скролбару (щоб був зеленим) */
 #residents-grid::-webkit-scrollbar {
     width: 10px;
 }
@@ -215,12 +211,10 @@ textarea {
     background: var(--rick-green);
 }
 
-/* Курсор для іконок, щоб було видно, що можна клікати */
 .resident-node {
     cursor: pointer;
 }
 
-/* --- ЕКРАН ВХОДУ --- */
 #login-screen {
     position: fixed;
     top: 0;
@@ -228,13 +222,13 @@ textarea {
     width: 100%;
     height: 100%;
     background: black;
-    z-index: 9999; /* Поверх усього */
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
     background-image:
             radial-gradient(circle, rgba(0, 50, 0, 0.2) 0%, black 80%),
-            url('https://wallpapers.com/images/hd/rick-and-morty-green-portal-background-4k-yy92556555565555.jpg'); /* Можна замінити на свою картинку */
+            url('https://wallpapers.com/images/hd/rick-and-morty-green-portal-background-4k-yy92556555565555.jpg');
     background-size: cover;
 }
 
@@ -306,26 +300,19 @@ textarea {
     background: rgba(0, 255, 0, 0.1);
 }
 
-/* --- ПАСХАЛКА: JERRY MODE --- */
 body.jerry-theme {
-    /* Міняємо крутий чорний фон на нудний пастельний */
     --rick-black: #fff0f5;
-
-    /* Міняємо неоновий зелений на гламурний рожевий */
     --rick-green: #ff69b4;
     --rick-green-dim: #ffb6c1;
-
-    /* Міняємо синій на фіолетовий */
     --rick-blue: #9370db;
 
-    /* Шрифт для лузерів */
     font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
 }
 
 body.jerry-theme .crt-overlay {
-    display: none; /* Вимикаємо ефект старого телевізора, бо Джеррі не заслуговує на ефекти */
+    display: none;
 }
 
 body.jerry-theme button {
-    border-radius: 20px; /* Робимо кнопки круглими і м'якими */
+    border-radius: 20px;
 }

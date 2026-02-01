@@ -1,13 +1,13 @@
-import { ApiResponse } from './interfaces.js';
+import { ApiResponse, Character, Note, Location } from './interfaces.js';
 
 const API_URL = 'https://rickandmortyapi.com/api/character';
+const LOCATION_URL = 'https://rickandmortyapi.com/api/location';
 
-// Допоміжна функція для заголовків (щоб додавати токен)
 function getHeaders() {
     const token = localStorage.getItem('rick-token');
     return {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // <--- ЦЕ ВАШ ПАСПОРТ
+        'Authorization': `Bearer ${token}`
     };
 }
 
@@ -25,9 +25,18 @@ export async function fetchCharacters(name: string = '', page: number = 1, statu
     }
 }
 
-// --- FAVORITES (НОВІ ФУНКЦІЇ) ---
+export async function fetchResidents(ids: string[]): Promise<Character[]> {
+    if (ids.length === 0) return [];
+    try {
+        const response = await fetch(`${API_URL}/${ids.join(',')}`);
+        const data = await response.json();
+        return Array.isArray(data) ? data : [data];
+    } catch (error) {
+        return [];
+    }
+}
 
-export async function addToFavorites(char: any) {
+export async function addToFavorites(char: Character) {
     await fetch('/api/favorites', {
         method: 'POST',
         headers: getHeaders(),
@@ -48,18 +57,25 @@ export async function removeFromFavorites(charId: number) {
     });
 }
 
-export async function getFavorites(): Promise<any[]> {
-    const res = await fetch('/api/favorites', { headers: getHeaders() });
-    return await res.json();
+export async function getFavorites(): Promise<Character[]> {
+    try {
+        const res = await fetch('/api/favorites', { headers: getHeaders() });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (e) {
+        return [];
+    }
 }
 
 export async function checkFavorite(charId: number): Promise<boolean> {
-    const res = await fetch(`/api/favorites/check/${charId}`, { headers: getHeaders() });
-    const data = await res.json();
-    return data.isFavorite;
+    try {
+        const res = await fetch(`/api/favorites/check/${charId}`, { headers: getHeaders() });
+        const data = await res.json();
+        return data.isFavorite;
+    } catch (e) {
+        return false;
+    }
 }
-
-// --- NOTES (Оновлені з заголовками) ---
 
 export async function saveNote(charId: number, name: string, text: string) {
     await fetch('/api/notes', {
@@ -79,9 +95,14 @@ export async function getNote(charId: number): Promise<string> {
     }
 }
 
-export async function getAllNotes(): Promise<any[]> {
-    const res = await fetch('/api/all-notes', { headers: getHeaders() });
-    return await res.json();
+export async function getAllNotes(): Promise<Note[]> {
+    try {
+        const res = await fetch('/api/all-notes', { headers: getHeaders() });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (e) {
+        return [];
+    }
 }
 
 export async function deleteNote(charId: number) {
@@ -91,23 +112,12 @@ export async function deleteNote(charId: number) {
     });
 }
 
-// --- LOCATIONS ---
-export async function fetchLocations(): Promise<any> {
+export async function fetchLocations(): Promise<{ results: Location[] }> {
     try {
-        const response = await fetch('https://rickandmortyapi.com/api/location');
+        const response = await fetch(LOCATION_URL);
+        if (!response.ok) throw new Error('Failed to load locations');
         return await response.json();
     } catch (error) {
         return { results: [] };
-    }
-}
-
-export async function fetchResidents(ids: string[]): Promise<any[]> {
-    if (ids.length === 0) return [];
-    try {
-        const response = await fetch(`https://rickandmortyapi.com/api/character/${ids.join(',')}`);
-        const data = await response.json();
-        return Array.isArray(data) ? data : [data];
-    } catch (error) {
-        return [];
     }
 }
